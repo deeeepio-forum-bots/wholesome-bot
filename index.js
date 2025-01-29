@@ -131,10 +131,10 @@ const executePost = async (id, postBody) => {
 	}
 };
 
-const executePage = async (pageNum) => {
+const executePage = async (pageNum, type) => {
 	console.log(`Checking page ${pageNum}`);
 	const data = await fetch(
-		`https://api.deeeep.io/forumPosts/en?count=15&order=new&page=${pageNum}`,
+		`https://api.deeeep.io/forumPosts/en?count=15&order=${type}&page=${pageNum}`,
 	).then((r) => r.json());
 	for (const post of data) {
 		if (post.comment_count === 0) continue;
@@ -145,5 +145,6 @@ const executePage = async (pageNum) => {
 await signIn();
 
 for (let i = 1; i <= config.pages; i++) {
-	await executePage(i);
+	await executePage(i, "new");
+	await executePage(i, "hot");
 }
