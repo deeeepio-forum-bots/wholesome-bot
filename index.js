@@ -98,13 +98,10 @@ const executePost = async (id, postBody) => {
 		`https://api.deeeep.io/forumPosts/en/${id}/comments?order=new`,
 	).then((r) => r.json());
 	comments.reverse();
-	const acknowledgedComments = [];
 	const replyQueue = [];
 	for (const comment of comments) {
 		// search for keyword
 		if (!comment.text.toLowerCase().includes("wholesomebot")) continue;
-		// dont reply to the same parent comment twice
-		if (acknowledgedComments.includes(comment.parent_id)) continue;
 		// dont reply to the same comment twice
 		if (replyQueue.includes(comment.id)) continue;
 
@@ -114,7 +111,6 @@ const executePost = async (id, postBody) => {
 		)
 			continue;
 
-		acknowledgedComments.push(comment.parent_id);
 		replyQueue.push(comment.id);
 	}
 
