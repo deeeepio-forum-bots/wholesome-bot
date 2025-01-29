@@ -107,11 +107,6 @@ const executePost = async (id, postBody) => {
 		if (acknowledgedComments.includes(comment.parent_id)) continue;
 		// dont reply to the same comment twice
 		if (replyQueue.includes(comment.id)) continue;
-		// dont reply to comments that have already been replied to
-		if (
-			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
-		)
-			continue;
 
 		// dont reply to comments with a sibling that has been replied to
 		const parentCommentReplies = comments.filter(
@@ -122,6 +117,12 @@ const executePost = async (id, postBody) => {
 				(c) =>
 					parentCommentReplies.includes(c.parent_id) && c.user.id === userId,
 			)
+		)
+			continue;
+
+		// dont reply to comments that have already been replied to
+		if (
+			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
 		)
 			continue;
 
