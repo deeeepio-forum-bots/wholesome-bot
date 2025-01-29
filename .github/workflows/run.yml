@@ -1,0 +1,30 @@
+name: Main script
+
+on:
+  schedule:
+    - cron: "0-59/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: "script"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create env variables
+        env:
+          GPT_API_ENDPOINT: ${{ secrets.GPT_API_ENDPOINT }}
+          DEEEEPIO_USERNAME: ${{ secrets.DEEEEPIO_USERNAME }}
+          DEEEEPIO_PASSWORD: ${{ secrets.DEEEEPIO_PASSWORD }}
+        run: |
+          touch .env
+          echo "GPT_API_ENDPOINT=$GPT_API_ENDPOINT" >> .env
+          echo "DEEEEPIO_USERNAME=$DEEEEPIO_USERNAME" >> .env
+          echo "DEEEEPIO_PASSWORD=$DEEEEPIO_PASSWORD" >> .env
+      - name: Run script
+        run: |
+          npm start
