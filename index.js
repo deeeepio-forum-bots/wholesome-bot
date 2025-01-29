@@ -110,6 +110,8 @@ const executePost = async (id, postBody) => {
 			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
 		)
 			continue;
+		// dont reply to own comments
+		if (comment.user.id === userId) continue;
 
 		replyQueue.push(comment.id);
 	}
