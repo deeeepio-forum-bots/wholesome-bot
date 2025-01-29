@@ -3,6 +3,8 @@ const config = {
 	commentInterval: 20000,
 };
 
+console.log("Started at", new Date());
+
 // AI endpoint
 const aiResponse = async (text) => {
 	return await fetch(process.env.GPT_API_ENDPOINT, {
