@@ -1,9 +1,12 @@
 const config = {
 	pages: 4,
 	commentInterval: 20000,
+	fetchPageThrottle: 500,
 };
 
 console.log("Started at", new Date());
+
+let checkedPosts = new Set();
 
 // AI endpoint
 const aiResponse = async (text) => {
@@ -94,11 +97,23 @@ const postComment = async (post_id, parent_id, text) => {
 	lastCommentTime = Date.now();
 };
 
+let lastPostFetchTime = 0;
 const executePost = async (id, postBody) => {
+	if (checkedPosts.has(id)) return;
+	checkedPosts.add(id);
 	console.log(`Checking post ${id}`);
+	if (Date.now() - lastPostFetchTime < config.fetchPageThrottle) {
+		await new Promise((resolve) =>
+			setTimeout(
+				resolve,
+				config.fetchPageThrottle - (Date.now() - lastPostFetchTime),
+			),
+		);
+	}
 	const comments = await fetch(
 		`https://api.deeeep.io/forumPosts/en/${id}/comments?order=new`,
 	).then((r) => r.json());
+	lastPostFetchTime = Date.now();
 	comments.reverse();
 	const replyQueue = [];
 	for (const comment of comments) {
@@ -132,7 +147,7 @@ const executePost = async (id, postBody) => {
 };
 
 const executePage = async (pageNum, type) => {
-	console.log(`Checking page ${pageNum}`);
+	console.log(`Checking page ${pageNum} - ${type}`);
 	const data = await fetch(
 		`https://api.deeeep.io/forumPosts/en?count=15&order=${type}&page=${pageNum}`,
 	).then((r) => r.json());
