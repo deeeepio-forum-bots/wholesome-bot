@@ -6,7 +6,7 @@ const config = {
 
 console.log("Started at", new Date());
 
-let checkedPosts = new Set();
+const checkedPosts = new Set();
 
 // AI endpoint
 const aiResponse = async (text, prompt) => {
@@ -85,14 +85,11 @@ const postComment = async (post_id, parent_id, text) => {
 		text,
 	};
 	if (parent_id != null) body.parent_id = parent_id;
-	const res = await fetch(
-		`https://api.deeeep.io/forumPosts/en/${post_id}/comments`,
-		{
-			headers,
-			body: JSON.stringify(body),
-			method: "POST",
-		},
-	);
+	await fetch(`https://api.deeeep.io/forumPosts/en/${post_id}/comments`, {
+		headers,
+		body: JSON.stringify(body),
+		method: "POST",
+	});
 
 	lastCommentTime = Date.now();
 };
