@@ -98,7 +98,7 @@ let lastPostFetchTime = 0;
 const executePost = async (id, postBody) => {
 	if (checkedPosts.has(id)) return;
 	checkedPosts.add(id);
-	console.log(`Checking post ${id}`);
+	console.log(`Checking post ${id} - https://deeeep.io/forum/en/${id}`);
 	if (Date.now() - lastPostFetchTime < config.fetchPageThrottle) {
 		await new Promise((resolve) =>
 			setTimeout(
@@ -131,7 +131,9 @@ const executePost = async (id, postBody) => {
 	}
 
 	for (const commentId of replyQueue) {
-		console.log(`Replying to comment ${commentId} in post ${id}`);
+		console.log(
+			`Replying to comment ${commentId} in post ${id} - https://deeeep.io/forum/en/${id}#comment-${commentId}`,
+		);
 		const comment = comments.find((c) => c.id === commentId);
 		const text =
 			comment.parent_id == null
