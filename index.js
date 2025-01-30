@@ -9,9 +9,9 @@ console.log("Started at", new Date());
 let checkedPosts = new Set();
 
 // AI endpoint
-const aiResponse = async (text) => {
+const aiResponse = async (text, prompt) => {
 	return await fetch(process.env.GPT_API_ENDPOINT, {
-		body: JSON.stringify({ text }),
+		body: JSON.stringify({ text, comment: prompt }),
 		method: "POST",
 		headers: {
 			accept: "text/plain",
@@ -140,7 +140,7 @@ const executePost = async (id, postBody) => {
 			comment.parent_id == null
 				? postBody
 				: comments.find((c) => c.id === comment.parent_id).text;
-		const reply = await aiResponse(text);
+		const reply = await aiResponse(text, comment.text);
 		await postComment(id, commentId, reply);
 		console.log(`Replied to comment ${commentId} in post ${id}`);
 	}
