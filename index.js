@@ -115,7 +115,8 @@ const executePost = async (id, postBody) => {
 	const replyQueue = [];
 	for (const comment of comments) {
 		// search for keyword
-		if (!comment.text.toLowerCase().includes("wholesomebot")) continue;
+    if (!comment.text.toLowerCase().includes("wholesomebot")) continue;
+    
 		// dont reply to the same comment twice
 		if (replyQueue.includes(comment.id)) continue;
 
@@ -123,9 +124,13 @@ const executePost = async (id, postBody) => {
 		if (
 			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
 		)
-			continue;
+      continue;
+    
 		// dont reply to own comments
-		if (comment.user.id === userId) continue;
+    if (comment.user.id === userId) continue;
+
+    // dont reply to comments with deleted parents
+    if (!comments.find((c) => c.id === comment.parent_id)) continue;
 
 		replyQueue.push(comment.id);
 	}
