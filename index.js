@@ -143,25 +143,25 @@ const executePost = async (id, postBody) => {
 	comments.reverse();
 	const replyQueue = [];
 	for (const comment of comments) {
-		// // search for keyword
-		// if (!comment.text.toLowerCase().match(/(wh|w|h)ole? ?s(o|u)me? ?bot/))
-		// 	continue;
+		// search for keyword
+		if (!comment.text.toLowerCase().match(/(wh|w|h)ole? ?s(o|u)me? ?bot/))
+			continue;
 
-		// // dont reply to the same comment twice
-		// if (replyQueue.includes(comment.id)) continue;
+		// dont reply to the same comment twice
+		if (replyQueue.includes(comment.id)) continue;
 
-		// // dont reply to comments that have already been replied to
-		// if (
-		// 	comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
-		// )
-		// 	continue;
+		// dont reply to comments that have already been replied to
+		if (
+			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
+		)
+			continue;
 
-		// // dont reply to own comments
-		// if (comment.user.id === userId) continue;
+		// dont reply to own comments
+		if (comment.user.id === userId) continue;
 
-		// // dont reply to comments with deleted parents
-		// if (comment.parent_id && !comments.find((c) => c.id === comment.parent_id))
-		// 	continue;
+		// dont reply to comments with deleted parents
+		if (comment.parent_id && !comments.find((c) => c.id === comment.parent_id))
+			continue;
 
 		replyQueue.push(comment.id);
 	}
