@@ -1,6 +1,6 @@
 const config = {
 	pages: 4,
-	commentInterval: 20000,
+	aiInterval: 20000,
 	fetchPageThrottle: 500,
 };
 
