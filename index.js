@@ -152,7 +152,8 @@ const executePost = async (id, postBody) => {
 		if (comment.user.id === userId) continue;
 
 		// dont reply to comments with deleted parents
-		if (!comments.find((c) => c.id === comment.parent_id)) continue;
+		if (comment.parent_id && !comments.find((c) => c.id === comment.parent_id))
+			continue;
 
 		replyQueue.push(comment.id);
 	}
