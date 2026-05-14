@@ -39,7 +39,6 @@ const aiResponse = async (text, prompt) => {
 			top_p: process.env.TOP_P ?? 1,
 			frequency_penalty: process.env.FREQUENCY_PENALTY ?? 0,
 			presence_penalty: process.env.PRESENCE_PENALTY ?? 0,
-			max_tokens: process.env.MAX_TOKENS ?? 4096,
 			stream: false,
 			reasoning_effort: process.env.REASONING_EFFORT ?? "medium",
 		}),
