@@ -119,12 +119,6 @@ const createPost = async (text) => {
 	}).then((r) => r.json());
 	if (!res.id) throw new Error("Post creation failed!");
 	console.log("Post created!", "https://deeeep.io/forum/en/" + res.id);
-	await fetch(`https://${process.env.DEEEEPIO_API}/forumPosts/en/${res.id}`, {
-		headers,
-		body: JSON.stringify({ category: "announcement" }),
-		method: "PUT",
-	});
-	console.log("Post tag set!");
 };
 
 await signIn();
