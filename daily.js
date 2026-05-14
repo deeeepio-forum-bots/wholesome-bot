@@ -112,15 +112,13 @@ const createPost = async (text) => {
 		category: "general",
 		title: `Daily Wholesomeness Report – ${months[d.getUTCMonth()]} ${d.getUTCDate() - (d.getUTCHours() < 12 ? 1 : 0)}, ${d.getUTCFullYear()}`,
 		text,
-		likes: 20,
-		up: 20,
-		pinned: true,
 	};
 	const res = await fetch(`https://${process.env.DEEEEPIO_API}/forumPosts/en`, {
 		headers,
 		body: JSON.stringify(body),
 		method: "POST",
 	}).then((r) => r.json());
+	if (!res.id) throw new Error("Post creation failed!");
 	console.log("Post created!", "https://deeeep.io/forum/en/" + res.id);
 	await fetch(`https://${process.env.DEEEEPIO_API}/forumPosts/en/${res.id}`, {
 		headers,
