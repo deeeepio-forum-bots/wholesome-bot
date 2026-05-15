@@ -214,9 +214,13 @@ const executePost = async (post) => {
 		await postComment(id, commentId, reply);
 		console.log(`Replied to comment ${commentId} in post ${id}`);
 
-		console.log(`Sending friend request to user ${comment.user.id}`);
-		await sendFriendRequest(comment.user.id);
-		console.log(`Sent friend request to user ${comment.user.id}`);
+		try {
+			console.log(`Sending friend request to user ${comment.user.id}`);
+			await sendFriendRequest(comment.user.id);
+			console.log(`Sent friend request to user ${comment.user.id}`);
+		} catch (e) {
+			console.error(e);
+		}
 	}
 };
 
