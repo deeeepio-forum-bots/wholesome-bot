@@ -120,6 +120,8 @@ const acceptFriendRequest = async (id) => {
 	):
 };
 
+await signIn();
+
 let shouldInterrupt = false;
 let previousPost;
 for (let i = 1; i <= config.pages; i++) {
@@ -139,7 +141,6 @@ for (let i = 1; i <= config.pages; i++) {
 	}
 }
 
-await signIn();
 const friendRequests = await getFriendRequests();
 let friendRequestsAccepted = 0;
 for (const request of friendRequests) {
