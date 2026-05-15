@@ -151,7 +151,11 @@ const executePost = async (post) => {
 	const replyQueue = [];
 	for (const comment of comments) {
 		// search for keyword
-		if (!comment.text.toLowerCase().match(/(wh|w|h)ole?.?s(o|u)me?.?bot/))
+		if (
+			!comment.text
+				.toLowerCase()
+				.match(/(wh|w|h)ole?.?s(o|u)me?.?(ness?)?.?bot/)
+		)
 			continue;
 
 		// dont reply to the same comment twice
