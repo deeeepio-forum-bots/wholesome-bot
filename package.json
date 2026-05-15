@@ -1,7 +1,8 @@
 {
 	"type": "module",
 	"scripts": {
-		"start": "node --env-file=.env index.js",
-		"daily": "node --env-file=.env daily.js"
+		"main": "node --env-file=.env src/main.js",
+		"daily-summary": "node --env-file=.env src/dailySummary.js",
+		"daily-friends": "node --env-file=.env src/dailyFriends.js"
 	}
 }

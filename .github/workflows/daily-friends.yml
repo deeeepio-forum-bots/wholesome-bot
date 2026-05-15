@@ -1,9 +1,9 @@
-name: Daily report
+name: Daily friends report
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 12 * * *"
 
 concurrency:
   group: "script"
@@ -30,4 +30,4 @@ jobs:
 
       - name: Run script
         run: |
-          npm run daily
+          npm run daily-friends

@@ -126,6 +126,17 @@ const postComment = async (post_id, parent_id, text) => {
 	lastCommentTime = Date.now();
 };
 
+const sendFriendRequest = async (id) => {
+	const res = await fetch(
+		`https://${process.env.DEEEEPIO_API}/friendRequests/${id}`,
+		{
+			headers,
+			method: "POST",
+		},
+	).then((r) => r.json());
+	return res;
+};
+
 let lastPostFetchTime = 0;
 const executePost = async (post) => {
 	const id = post.id;
@@ -202,6 +213,10 @@ const executePost = async (post) => {
 		);
 		await postComment(id, commentId, reply);
 		console.log(`Replied to comment ${commentId} in post ${id}`);
+
+		console.log(`Sending friend request to user ${comment.user.id}`);
+		await sendFriendRequest(comment.user.id);
+		console.log(`Sent friend request to user ${comment.user.id}`);
 	}
 };
 

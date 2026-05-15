@@ -27,4 +27,4 @@ jobs:
 
       - name: Run script
         run: |
-          npm start
+          npm run main
