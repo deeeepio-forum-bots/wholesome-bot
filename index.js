@@ -10,10 +10,9 @@ const checkedPosts = new Set();
 
 console.log(
 	"Prompt:",
-	process.env.PROMPT.replace("{{Comment}}", "<comment>").replace(
-		"{{Input}}",
-		"<input>",
-	),
+	process.env.PROMPT.replace("{{Comment}}", "<comment>")
+		.replace("{{Input}}", "<input>")
+		.replace("{{Context}}", "<context>"),
 );
 
 // Data formatter
