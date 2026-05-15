@@ -111,14 +111,13 @@ const getFriendRequests = async () => {
 };
 
 const acceptFriendRequest = async (id) => {
-	const res = await fetch(
+	await fetch(
 		`https://${process.env.DEEEEPIO_API}/friendRequests/accept/${id}`,
 		{
 			headers,
 			method: "POST",
 		},
-	).then((r) => r.json());
-	return res;
+	):
 };
 
 let shouldInterrupt = false;
