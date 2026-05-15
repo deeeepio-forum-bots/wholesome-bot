@@ -117,7 +117,7 @@ const acceptFriendRequest = async (id) => {
 			headers,
 			method: "POST",
 		},
-	):
+	);
 };
 
 await signIn();
