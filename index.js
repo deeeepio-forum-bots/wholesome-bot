@@ -158,10 +158,10 @@ const executePost = async (post) => {
 		if (replyQueue.includes(comment.id)) continue;
 
 		// dont reply to comments that have already been replied to
-		// if (
-		// 	comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
-		// )
-		// 	continue;
+		if (
+			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
+		)
+			continue;
 
 		// dont reply to own comments
 		if (comment.user.id === userId) continue;
