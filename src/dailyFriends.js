@@ -154,7 +154,7 @@ for (const request of friendRequests) {
 const friends = await getAllFriends();
 const previousFriendCount =
 	(previousPost && previousPost.text.match(/(?<=Total friends: )\d+/)[0]) || -1;
-const newFriends = previousFriendCount - friends.length;
+const newFriends = friends.length - previousFriendCount;
 let text =
 	previousFriendCount > -1
 		? `Today I made ${newFriends} new friends! 
