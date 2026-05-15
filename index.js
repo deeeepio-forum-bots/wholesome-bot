@@ -16,8 +16,14 @@ console.log(
 	),
 );
 
+// Data formatter
+const formatComment = (comment) =>
+	`Comment author: ${comment.user.username}\nComment text:\n${comment.text}`;
+const formatPost = (post) =>
+	`Post title: ${post.title}\nPost author: ${post.user.username}\nPost text:\n${post.text}`;
+
 // AI endpoint
-const aiResponse = async (text, prompt) => {
+const aiResponse = async (input, comment, context) => {
 	return await fetch(process.env.API_ENDPOINT, {
 		method: "POST",
 		headers: {
@@ -29,10 +35,9 @@ const aiResponse = async (text, prompt) => {
 			messages: [
 				{
 					role: "user",
-					content: process.env.PROMPT.replace("{{Comment}}", prompt).replace(
-						"{{Input}}",
-						text,
-					),
+					content: process.env.PROMPT.replace("{{Comment}}", comment)
+						.replace("{{Input}}", input)
+						.replace("{{Context}}", context),
 				},
 			],
 			temperature: process.env.TEMPERATURE ?? 0.8,
@@ -123,7 +128,10 @@ const postComment = async (post_id, parent_id, text) => {
 };
 
 let lastPostFetchTime = 0;
-const executePost = async (id, postBody) => {
+const executePost = async (post) => {
+	const id = post.id;
+	const body = post.text;
+
 	if (checkedPosts.has(id)) return;
 	checkedPosts.add(id);
 	console.log(`Checking post ${id} - https://deeeep.io/forum/en/${id}`);
@@ -150,10 +158,10 @@ const executePost = async (id, postBody) => {
 		if (replyQueue.includes(comment.id)) continue;
 
 		// dont reply to comments that have already been replied to
-		if (
-			comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
-		)
-			continue;
+		// if (
+		// 	comments.find((c) => c.parent_id === comment.id && c.user.id === userId)
+		// )
+		// 	continue;
 
 		// dont reply to own comments
 		if (comment.user.id === userId) continue;
@@ -172,9 +180,22 @@ const executePost = async (id, postBody) => {
 		const comment = comments.find((c) => c.id === commentId);
 		const text =
 			comment.parent_id == null
-				? postBody
-				: comments.find((c) => c.id === comment.parent_id).text;
-		const reply = await aiResponse(text, comment.text);
+				? formatPost(post)
+				: formatComment(comments.find((c) => c.id === comment.parent_id));
+		const context = [];
+		let p = comment.parent_id;
+		while (p != null) {
+			context.push(formatComment(comments.find((c) => c.id === p)));
+			p = comments.find((c) => c.id === p).parent_id;
+		}
+		if (comment.parent_id != null) context.push(formatPost(post));
+		const reply = await aiResponse(
+			text,
+			formatComment(comment),
+			context.length > 0
+				? context.join("\n\n------------------\n\n")
+				: "No additional context",
+		);
 		await postComment(id, commentId, reply);
 		console.log(`Replied to comment ${commentId} in post ${id}`);
 	}
@@ -187,7 +208,7 @@ const executePage = async (pageNum, type) => {
 	).then((r) => r.json());
 	for (const post of data) {
 		if (post.comment_count === 0) continue;
-		await executePost(post.id, post.text);
+		await executePost(post);
 	}
 };
 
