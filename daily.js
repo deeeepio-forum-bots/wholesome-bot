@@ -194,11 +194,12 @@ const createPost = async (text) => {
 		body: JSON.stringify(body),
 		method: "POST",
 	}).then((r) => r.json());
-	if (!res.id) throw new Error("Post creation failed!");
+	if (!res.id) {
+		console.error(res);
+		throw new Error("Post creation failed!");
+	}
 	console.log("Post created!", "https://deeeep.io/forum/en/" + res.id);
 };
-
-await signIn();
 
 const prompt = [];
 for (let i = 1; i <= config.pages; i++) {
@@ -221,4 +222,5 @@ for (let i = 1; i <= config.pages; i++) {
 }
 const promptText = prompt.join("\n\n------------------\n\n");
 const text = await aiResponse(promptText);
+await signIn();
 await createPost(text);
