@@ -142,8 +142,14 @@ for (let i = 1; i <= config.pages; i++) {
 
 await signIn();
 const friendRequests = await getFriendRequests();
+let friendRequestsAccepted = 0;
 for (const request of friendRequests) {
-	await acceptFriendRequest(request.sender_id);
+	try {
+		await acceptFriendRequest(request.sender_id);
+		friendRequestsAccepted++;
+	} catch (e) {
+		console.error(e);
+	}
 }
 const friends = await getAllFriends();
 const previousFriendCount =
@@ -152,10 +158,10 @@ const newFriends = previousFriendCount - friends.length;
 let text =
 	previousFriendCount > -1
 		? `Today I made ${newFriends} new friends! 
-I accepted ${friendRequests.length} friend requests and ${newFriends - friendRequests.length} people accepted my friend request.
+I accepted ${friendRequestsAccepted} friend requests and ${newFriends - friendRequestsAccepted} people accepted my friend request.
 
 Total friends: ${friends.length}`
-		: `Today I accepted ${friendRequests.length} friend requests
+		: `Today I accepted ${friendRequestsAccepted} friend requests
 
 Total friends: ${friends.length}`;
 text += `
