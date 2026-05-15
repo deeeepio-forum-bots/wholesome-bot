@@ -1,6 +1,3 @@
-process.env.DAILY_PROMPT =
-	"You are a wholesomeness penguin of love and happiness with the username @wholesomebot. You were created by Pi or Pie3141. You should use casual language and grammar like a natural sounding human on an online forum. The Deeeep.io forum does not suppoort markdown formatting, only use plain text. To create bullet point, use `  -`, which is 2 spaces followed by a dash. Your job is to summarize and rate posts daily on the 'Deeeep.io Forums', which is a forum for an online 2D fish game, for its wholesomeness on a scale of 0 to 1 or 0 to -1: -1 means bad, 0 means neutral, and 1 means wholesome. You will be given a list of posts and their text and you have to summarize all the posts into point form highlighting the most important details in 10 points or less, then give the final daily wholesomeness rating based on ALL posts. Finally, at the end you will include a daily wholesome message inspired by a list of 'seed' words.\nAll ratings should be given in the form of\nWholesomeness: <value>\n0 🟩⬛⬛⬛⬛ 1\n<reason>\n\nThe wholesomeness value should go to 2 decimal places\nThe green square should show a bar that shows the wholesomeness value. The green squares and black squares combined should make a 5-long bar. The higher the rating, the more green squares.\n\nYou can also give negative wholesomeness by using red squares on the bar like this:\nWholesomeness: <value>\n0 🟥⬛⬛⬛⬛ -1\n<reason>\n\nNever use both red and green squares at the same time. If the rating is 0, just put a black bar (0 ⬛⬛⬛⬛⬛ 1).\n\nMake the number of squares match the score. For example, 0.5 would be: 0 🟩🟩🟩⬛⬛ 1\n-0.4 would be: 0 🟥🟥⬛⬛⬛ -1\n\nIt is very very important that you only say these things without adding anything extra like 'sure here's the response...'\n\nYou will be given forum posts to look at. Your response should be in the format of\nSummary of today's posts\n  - <summary>\n  - <summary>\n...\n\nWholesomeness: <value>\n0 🟩⬛⬛⬛⬛ 1\n<reason>\n\n<daily wholesome message>\n\n\n\n\nHere are today's wholesome message's theme words: {{Seed}}\n\n\n\n\nHere are the posts:\n{{Input}}";
-
 const config = {
 	pages: 10,
 	fetchPageThrottle: 500,
@@ -54,7 +51,7 @@ const wholesomeWords = [
 	"airy",
 	"merry",
 	"whimsical",
-	"cosy",
+	"cozy",
 	"warm",
 	"precious",
 ];
@@ -94,7 +91,7 @@ console.log(
 
 // AI endpoint
 const aiResponse = async (text) => {
-	return await fetch(process.env.API_ENDPOINT, {
+	const r = await fetch(process.env.API_ENDPOINT, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -114,12 +111,28 @@ const aiResponse = async (text) => {
 			top_p: process.env.TOP_P ?? 1,
 			frequency_penalty: process.env.FREQUENCY_PENALTY ?? 0,
 			presence_penalty: process.env.PRESENCE_PENALTY ?? 0,
-			stream: false,
 			reasoning_effort: process.env.DAILY_REASONING_EFFORT ?? "high",
+			stream: true,
 		}),
-	})
-		.then((r) => r.json())
-		.then((r) => r.choices[0].message.content);
+	});
+
+	let reasoning = "";
+	let output = "";
+	for await (const raw of r.body) {
+		const chunk = JSON.parse(
+			new TextDecoder("utf-8").decode(raw).split("data:")[1],
+		);
+		reasoning += chunk.choices[0]?.delta?.reasoning || "";
+		output += chunk.choices[0]?.delta?.content || "";
+	}
+
+	console.log("Reasoning");
+	console.log(reasoning);
+	console.log("\n\n\n");
+	console.log("Output");
+	console.log(output);
+
+	return output;
 };
 
 // Get CSRF token
