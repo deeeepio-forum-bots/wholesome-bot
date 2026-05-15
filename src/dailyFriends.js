@@ -1,5 +1,5 @@
 const config = {
-	pages: 50,
+	pages: 10,
 	fetchPageThrottle: 500,
 };
 
