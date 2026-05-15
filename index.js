@@ -193,6 +193,7 @@ const executePost = async (post) => {
 			p = comments.find((c) => c.id === p).parent_id;
 		}
 		if (comment.parent_id != null) context.push(formatPost(post));
+		context.reverse();
 		const reply = await aiResponse(
 			text,
 			formatComment(comment),
