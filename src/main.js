@@ -82,6 +82,7 @@ await fetch(`https://${process.env.DEEEEPIO_API}/auth/timezone`, {
 	});
 
 let userId = 0;
+let username = "";
 const signIn = async () => {
 	await fetch(`https://${process.env.DEEEEPIO_API}/auth/local/signin`, {
 		headers: headers,
@@ -94,6 +95,7 @@ const signIn = async () => {
 		.then((r) => r.json())
 		.then((r) => {
 			userId = r.user.id;
+			username = r.user.username;
 			headers.cookie += `; CHROMEV=${r.token}`;
 		});
 };
@@ -240,4 +242,26 @@ await signIn();
 for (let i = 1; i <= config.pages; i++) {
 	await executePage(i, "new");
 	await executePage(i, "hot");
+}
+
+let count = 0;
+try {
+	for (let i = 0; i < 100; i++) {
+		await fetch(
+			`https://${process.env.DEEEEPIO_API}/users/u/${username}?ref=profile`,
+			{
+				headers: {
+					...headers,
+					accept: "application/json, text/plain, */*",
+					"accept-language": "en-US,en;q=0.9",
+				},
+				referrer: "https://deeeep.io/",
+				body: null,
+				method: "GET",
+			},
+		);
+		count++;
+	}
+} catch (e) {
+	console.log("Fetched", count, "times");
 }
