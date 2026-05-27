@@ -69,9 +69,7 @@ const initializeCSRF = async () => {
 			)
 			.map((t) => String.fromCharCode(t))
 			.join("");
-	await fetch(`https://${process.env.DEEEEPIO_API}/auth/timezone`, {
-		credentials: "include",
-	})
+	await fetch(`https://${process.env.DEEEEPIO_API}/auth/timezone`)
 		.then((r) => {
 			headers.cookie = r.headers
 				.getSetCookie()[0]
