@@ -247,7 +247,9 @@ for (let i = 1; i <= config.pages; i++) {
 	await executePage(i, "new");
 	await executePage(i, "hot");
 }
+console.log("Done");
 
+console.log("Viewing profile...");
 let count = 0;
 try {
 	for (let i = 0; i < 100; i++) {
@@ -268,5 +270,6 @@ try {
 		count++;
 	}
 } catch (e) {
-	console.log("Fetched", count, "times");
+	console.error(e);
 }
+console.log("Viewed profile", count, "times");
