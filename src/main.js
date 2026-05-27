@@ -52,34 +52,38 @@ const aiResponse = async (input, comment, context) => {
 };
 
 // Get CSRF token
-const headers = {
-	"content-type": "application/json;charset=UTF-8",
-};
-const decodeCSRF = (csrf, magicStr) =>
-	csrf
-		.match(/.{1,2}/g)
-		.map((t) => Number.parseInt(t, 16))
-		.map((t) =>
-			magicStr
-				.split("")
-				.map((t) => t.charCodeAt(0))
-				.reduce((t, e) => t ^ e, t),
-		)
-		.map((t) => String.fromCharCode(t))
-		.join("");
-await fetch(`https://${process.env.DEEEEPIO_API}/auth/timezone`, {
-	credentials: "include",
-})
-	.then((r) => {
-		headers.cookie = r.headers
-			.getSetCookie()[0]
-			.match(/dinfo\.schema=.*?(?=;)/i)[0];
-		return r;
+let headers = {};
+const initializeCSRF = async () => {
+	headers = {
+		"content-type": "application/json;charset=UTF-8",
+	};
+	const decodeCSRF = (csrf, magicStr) =>
+		csrf
+			.match(/.{1,2}/g)
+			.map((t) => Number.parseInt(t, 16))
+			.map((t) =>
+				magicStr
+					.split("")
+					.map((t) => t.charCodeAt(0))
+					.reduce((t, e) => t ^ e, t),
+			)
+			.map((t) => String.fromCharCode(t))
+			.join("");
+	await fetch(`https://${process.env.DEEEEPIO_API}/auth/timezone`, {
+		credentials: "include",
 	})
-	.then((r) => r.json())
-	.then((r) => {
-		headers.twitch = decodeCSRF(r.t, "CSRFRDRDNKNK");
-	});
+		.then((r) => {
+			headers.cookie = r.headers
+				.getSetCookie()[0]
+				.match(/dinfo\.schema=.*?(?=;)/i)[0];
+			return r;
+		})
+		.then((r) => r.json())
+		.then((r) => {
+			headers.twitch = decodeCSRF(r.t, "CSRFRDRDNKNK");
+		});
+};
+await initializeCSRF();
 
 let userId = 0;
 let username = "";
@@ -247,6 +251,7 @@ for (let i = 1; i <= config.pages; i++) {
 let count = 0;
 try {
 	for (let i = 0; i < 100; i++) {
+		if (i > 0) await initializeCSRF();
 		await fetch(
 			`https://${process.env.DEEEEPIO_API}/users/u/${username}?ref=profile`,
 			{
