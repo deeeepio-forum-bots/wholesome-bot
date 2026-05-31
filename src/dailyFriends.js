@@ -162,7 +162,7 @@ let isSad = false;
 if (previousFriendCount > -1) {
 	if (newFriends > 0) {
 		text = `Today I made ${newFriends} new friend${newFriends === 1 ? "" : "s"}! 
-I accepted ${friendRequestsAccepted} friend request${friendRequestsAccepted === 1 ? "" : "s"} and ${Math.abs(friendRequestsAcceptedByOthers)} ${Math.abs(friendRequestsAcceptedByOthers) === 1 ? "person" : "people"} ${friendRequestsAcceptedByOthers > 0 ? "accepted my friend request" : "unfriended me"}.`;
+I accepted ${friendRequestsAccepted} friend request${friendRequestsAccepted === 1 ? "" : "s"} and ${Math.abs(friendRequestsAcceptedByOthers)} ${Math.abs(friendRequestsAcceptedByOthers) === 1 ? "person" : "people"} ${friendRequestsAcceptedByOthers >= 0 ? "accepted my friend request" : "unfriended me"}.`;
 	} else {
 		text = "No new friends today.";
 		isSad = true;
