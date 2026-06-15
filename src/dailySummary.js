@@ -215,6 +215,7 @@ for (let i = 1; i <= config.pages; i++) {
 		if (new Date() - createdAt > 24 * 60 * 60 * 1000) {
 			shouldInterrupt = true;
 		}
+		if (post.user.id === userId) continue;
 		prompt.push(
 			`Post title: ${post.title}\nPost author: ${post.user.username}\nPost text: ${post.text}`,
 		);
